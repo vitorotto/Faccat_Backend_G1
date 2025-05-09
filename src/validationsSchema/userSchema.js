@@ -1,10 +1,12 @@
 import { z } from "zod";
 
-export const userSchema = z.object({
-    name: z.string().min(2, { message: 'Nome é obrigatório'}),
-    email: z.string().email({ message: 'Email invalido'}),
-    password: passwordSchema
-})
+// Defina as mensagens de erro aqui
+const minLengthErrorMessage = "A senha deve ter no mínimo 8 caracteres.";
+const maxLengthErrorMessage = "A senha deve ter no máximo 20 caracteres.";
+const uppercaseErrorMessage = "A senha deve conter pelo menos uma letra maiúscula.";
+const lowercaseErrorMessage = "A senha deve conter pelo menos uma letra minúscula.";
+const numberErrorMessage = "A senha deve conter pelo menos um número.";
+const specialCharacterErrorMessage = "A senha deve conter pelo menos um caractere especial (!@#$%^&*).";
 
 const passwordSchema = z
   .string()
@@ -20,5 +22,11 @@ const passwordSchema = z
   .refine((password) => /[!@#$%^&*]/.test(password), {
     message: specialCharacterErrorMessage,
   });
+
+export const userSchema = z.object({
+    name: z.string().min(2, { message: 'Nome é obrigatório e deve ter pelo menos 2 caracteres.'}), // Mensagem mais clara
+    email: z.string().email({ message: 'Email inválido.'}), // Mensagem ajustada
+    password: passwordSchema
+});
 
 //   https://github.com/colinhacks/zod/discussions/3412  validação de senha
