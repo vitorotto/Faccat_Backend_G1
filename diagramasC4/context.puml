@@ -1,0 +1,14 @@
+@startuml c4_context
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+Person(user, "Usuário", "Cria perfil, registra tarefas, vê histórico proprio")
+Person(admin, "Administrador", "Edita perfil, consulta dados, consulta sugestões, vê histórico geral")
+System(system, "Sistema de Descarte Adequado de Lixo", "Gerencia perfis, tarefas, sugestões, pontos de coleta, histórico")
+
+System_Ext(apiAvisos, "API Externa para gerar avisos", "Envia lembretes de descarte")
+
+Rel(user, system, "Usa via web/app")
+Rel(admin, system, "Usa via web/app")
+Rel(system, apiAvisos, "Consulta categorias de descarte")
+
+@enduml
