@@ -3,18 +3,38 @@
 
 Container(api, "Backend API", "Node.js/Express", "REST API com JWT")
 
-Component(authController, "Controle de autenticação", "Gerencia login, JWT")
-Component(userProfileService, "Componente de perfil de usuário", "Gerencia perfis pessoais")
-Component(taskService, "Componente de tarefas de descarte", "Gerencia tarefas de descarte")
-Component(suggestionService, "Componente de Lemtretes", "Consulta API externa para categorias")
-Component(locationService, "Componente de localização", "Localiza pontos de coleta")
-Component(historyService, "Componente de Histórico", "Gerencia histórico e boas práticas")
+System_Boundary(system, "Sistema de Descarte Inteligente") {
+    
+    Component(signUp, "Componente de cadastro", "Componente: controllers/userController.js", "Gerencia cadastro")
+    Component(signInServer, "Componente de login", "Componente: server.js", "Gerencia autenticação")
+    Component(authController, "Controle de autenticação", "Gerencia login, JWT")
+    Component(userProfileService, "Componente de perfil de usuário", "Componente: server.js", "Gerencia perfil de usuário")
+    ' Component(taskService, "Componente de tarefas de descarte", "Gerencia tarefas de descarte")
+    ' Component(suggestionService, "Componente de Lemtretes", "Consulta API externa para categorias")
+    ' Component(locationService, "Componente de localização", "Localiza pontos de coleta")
+    ' Component(historyService, "Componente de Histórico", "Gerencia histórico e boas práticas")
+}
 
-Rel(api, authController, "Usa")
-Rel(api, userProfileService, "Usa")
-Rel(api, taskService, "Usa")
-Rel(api, suggestionService, "Usa")
-Rel(api, locationService, "Usa")
-Rel(api, historyService, "Usa")
+ContainerDb(db, "Banco de Dados", "Supabase", "Armazena perfis, tarefas, histórico")
+
+' Componente de cadastro
+signUp -up-> api : "Chama a API", "JSON/HTTPS"
+signUp -down-> authController : "Usa"
+
+' Componente de login
+signInServer -up-> api : "chama a API", "JSON/HTTPS"
+signInServer -down-> authController : "Usa"
+
+' Gerenciamanto de perfil chama cadastro para editar dados
+userProfileService -right-> api : "Usa"
+userProfileService -> db : "Lê de...", "GET"
+userProfileService -up-> signUp : "Chama componente de cadastro"
+' Rel(api, taskService, "Usa")
+' Rel(api, suggestionService, "Usa")
+' Rel(api, locationService, "Usa")
+' Rel(api, historyService, "Usa")
+
+
+Rel(authController, db, "Lê de... e escreve para...", "POST, PUT, DELETE")
 
 @enduml
