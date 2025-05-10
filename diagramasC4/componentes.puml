@@ -2,9 +2,12 @@
 !includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
 
 Container(api, "Backend API", "Node.js/Express", "REST API com JWT")
+note right of api
+    A API é responsável por gerenciar a comunicação entre o aplicativo e o banco de dados.
+    Ela autentica usuários, gerencia tarefas de descarte e fornece informações sobre pontos de coleta.
+end note
 
 System_Boundary(system, "Sistema de Descarte Inteligente") {
-    left to right direction
     ' Componentes de Login
     package "Componentes de Usuário" {
         Component(signInServer, "Componente de login", "Componente: Controller/UserController.js", "Gerencia login")
@@ -15,26 +18,45 @@ System_Boundary(system, "Sistema de Descarte Inteligente") {
 
     ' Componentes de Tarefas
     package "Componentes de Tarefas" {
-        Component(taskService, "Componente de tarefas de descarte", "Componenente: Controller/taskController.js", "Gerencia tarefas de descarte")
+        Component(taskList, "Exibe tarefas de descarte", "Componenente: Controller/taskController.js", "Listagem das tarefas cadastradas")
+        Component(taskControl, "CRUD de tarefas", "Componente: Controller/taskRepository.js", "Gerencia CRUD de tarefas")
     }
 
     ' Componentes de Lembretes (comentados por enquanto)
     package "Componentes de Lembretes" {
-        Component(suggestionService, "Componente de Lembretes", "Consulta API externa para categorias")
+        Component(suggestionService, "Componente de Lembretes", "Componente: Controller/suggestionController.js", "Gerencia lembretes de descarte")
+        Component(suggestionRepository, "Componente de Repositório de Lembretes", "Componente: Controller/suggestionRepository.js", "Gerencia CRUD de lembretes")
+        note right of suggestionService
+            O componente de lembretes é responsável por enviar notificações ao usuário sobre as tarefas de descarte.
+            Ele utiliza uma API externa para gerar os lembretes.
+        end note
     }
+    
 
     ' Componentes de Localização (comentados por enquanto)
     package "Componentes de Localização" {
-        Component(locationService, "Componente de localização", "Localiza pontos de coleta")
+        Component(locationService, "Localiza pontos de Coleta", "Componente: Controller/locationController.js", "Gerencia localização de pontos de coleta")
+        Component(locationRepository, "Repositório de Localização", "Componente: Controller/locationRepository.js", "Gerencia CRUD de localização")
+        note right of locationService
+            O componente de localização é responsável por encontrar pontos de coleta próximos ao usuário.
+            Ele utiliza uma API externa para obter informações sobre categorias de descarte.
+        end note
     }
+
 
     ' Componentes de Histórico (comentados por enquanto)
     package "Componentes de Histórico" {
-        Component(historyService, "Componente de Histórico", "Gerencia histórico e boas práticas")
+        Component(historyService, "Visualiza o histórico", "Componente: Controller/historyController.js", "Gerencia histórico de descarte")
+        Component(historyRepository, "Repositório de Histórico", "Componente: Controller/historyRepository.js", "Gerencia CRUD de histórico")
+        Component(historyAccess, "Acesso ao Histórico", "Componente: Controller/historyAccess.js", "Gerencia acesso ao histórico")
     }
 }
 
 ContainerDb(db, "Banco de Dados", "PostgreSQL, Supabase", "Armazena perfis, tarefas, histórico")
+System_Ext(apiCategories, "API Externa", "API de Categorias", "Consulta categorias de descarte")
+System_Ext(apiAvisos, "API Externa para gerar avisos", "Fornece avisos para tarefas de descarte e afins")
+
+' Sistema de Descarte Adequado de Lixo
 system -up-> api : "Chama a API [JSON/HTTPS]"
 
 ' Componente de cadastro
@@ -49,8 +71,25 @@ authController -down-> db : "Escreve dados do usuário no banco de dados"
 userProfileService -> db : "Lê dados do usuário"
 userProfileService -down-> signUp : "Chama componente de cadastro"
 
-' Registrar tarefas de descarte (ex: "levar eletrônico ao ponto de coleta").
-taskService --> db : "CRUD"
+' Registrar tarefas de descarte
+taskList --> db : "Le dados do banco de dados", "GET"
+taskControl -down-> db : "Escreve dados no banco de dados", "POST"
+
+' Lembretes de descarte
+suggestionService -down-> suggestionRepository : "Chama repositório de lembretes"
+suggestionService -up-> apiAvisos : "Chama API externa para gerar avisos"
+suggestionRepository -down-> db : "Lê/escreve dados no banco de dados"
+
+' Localização de pontos de coleta
+locationService -down-> locationRepository : "Chama repositório de localização"
+locationService -up-> apiCategories : "Chama API externa para categorias"
+locationRepository -down-> db : "Lê/escreve dados no banco de dados"
+
+' Histórico de descarte
+historyService -down-> historyRepository : "Chama repositório de histórico"
+historyService -up-> historyAccess : "Chama acesso ao histórico"
+historyRepository -down-> db : "Lê/escreve dados no banco de dados"
+historyAccess -down-> db : "Lê/escreve dados no banco de dados"
 
 
 @enduml
