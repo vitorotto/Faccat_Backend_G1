@@ -24,9 +24,12 @@ const passwordSchema = z
   });
 
 export const userSchema = z.object({
-    name: z.string().min(2, { message: 'Nome é obrigatório e deve ter pelo menos 2 caracteres.'}), // Mensagem mais clara
-    email: z.string().email({ message: 'Email inválido.'}), // Mensagem ajustada
+    name: z.string().min(2, { message: 'Nome é obrigatório e deve ter pelo menos 2 caracteres.'}),
+    email: z.string().email({ message: 'Email inválido.'}),
     password: passwordSchema
 });
 
-//   https://github.com/colinhacks/zod/discussions/3412  validação de senha
+export const loginSchema = z.object({
+    email: z.string().email({ message: 'Email inválido'}),
+    password: z.string()
+});

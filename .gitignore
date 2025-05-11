@@ -13,6 +13,7 @@ yarn.lock
 # Prisma
 prisma/*.db
 prisma/migrations/
+src/generated/
 *.db
 *.db-journal
 
