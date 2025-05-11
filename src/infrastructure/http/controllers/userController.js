@@ -1,5 +1,6 @@
 import makeCreateUser from "../../../application/use-cases/CreateUsers.js";
 import makeLoginUser from "../../../application/use-cases/LoginUser.js";
+import makeEdituser from "../../../application/use-cases/EditUser.js";
 import UserPrismaRepository from "../../database/UserPrismaRepository.js";
 
 const repository = new UserPrismaRepository();
@@ -21,7 +22,7 @@ export const handleCreateUser = async (req, res) => {
   }
 };
 
-export const login = async (req, res) => {
+export const handleLogin = async (req, res) => {
   try {
     const { email, password } = req.validatedData;
     const loginUserCase = makeLoginUser(repository);
@@ -34,7 +35,21 @@ export const login = async (req, res) => {
   }
 };
 
+export const handleEditUser = async (req, res) => {
+  try {
+    const { name, email, password } = req.validatedData;
+    const userId = req.userId;
+    
+    const editUserCase = makeEdituser(repository);
+    const user = await editUserCase(userId, { name, email, password });
+
+    res.status(200).json(userWithoutPassword(user));
+  } catch (err) {
+    console.error("Erro ao editar usuário:", err);
+    res.status(500).json({ error: "Ocorreu um erro interno no servidor." });
+  }
+};
 function userWithoutPassword(user) {
-   const { password: _, ...userWithoutPassword } = user;
-   return userWithoutPassword;
+  const { password: _, ...userWithoutPassword } = user;
+  return userWithoutPassword;
 }

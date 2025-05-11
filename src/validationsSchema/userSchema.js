@@ -3,10 +3,13 @@ import { z } from "zod";
 // Defina as mensagens de erro aqui
 const minLengthErrorMessage = "A senha deve ter no mínimo 8 caracteres.";
 const maxLengthErrorMessage = "A senha deve ter no máximo 20 caracteres.";
-const uppercaseErrorMessage = "A senha deve conter pelo menos uma letra maiúscula.";
-const lowercaseErrorMessage = "A senha deve conter pelo menos uma letra minúscula.";
+const uppercaseErrorMessage =
+  "A senha deve conter pelo menos uma letra maiúscula.";
+const lowercaseErrorMessage =
+  "A senha deve conter pelo menos uma letra minúscula.";
 const numberErrorMessage = "A senha deve conter pelo menos um número.";
-const specialCharacterErrorMessage = "A senha deve conter pelo menos um caractere especial (!@#$%^&*).";
+const specialCharacterErrorMessage =
+  "A senha deve conter pelo menos um caractere especial (!@#$%^&*).";
 
 const passwordSchema = z
   .string()
@@ -23,13 +26,25 @@ const passwordSchema = z
     message: specialCharacterErrorMessage,
   });
 
+const nameSchema = z.string().min(2, {
+  message: "Nome é obrigatório e deve ter pelo menos 2 caracteres.",
+});
+
+const emailSchema = z.string().email({ message: "Email inválido." });
+
 export const userSchema = z.object({
-    name: z.string().min(2, { message: 'Nome é obrigatório e deve ter pelo menos 2 caracteres.'}),
-    email: z.string().email({ message: 'Email inválido.'}),
-    password: passwordSchema
+  name: nameSchema,
+  email: emailSchema,
+  password: passwordSchema,
 });
 
 export const loginSchema = z.object({
-    email: z.string().email({ message: 'Email inválido'}),
-    password: z.string()
+  email: emailSchema,
+  password: z.string(),
+});
+
+export const editSchema = z.object({
+  name: nameSchema.optional(),
+  email: emailSchema.optional(),
+  password: passwordSchema.optional(),
 });

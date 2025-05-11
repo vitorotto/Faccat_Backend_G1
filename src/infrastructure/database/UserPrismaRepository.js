@@ -1,18 +1,18 @@
-import { encodePassword } from "../../utils/bcrypt.js";
+import { encodePassword, decodePassword } from "../../utils/bcrypt.js";
 import { PrismaClient } from "../../generated/prisma/index.js";
-import { decodePassword } from '../../utils/bcrypt.js'
+import UserRepository from "../../domain/ports/UserRepository.js";
 
 export const prisma = new PrismaClient();
 
-export default class UserPrismaRepository {
+export default class UserPrismaRepository extends UserRepository {
   async create({ name, email, password }) {
     try {
-      const hashPassword = encodePassword(password);
+      const hashedPassword = encodePassword(password);
       const createdUser = await prisma.user.create({
         data: {
           name,
           email,
-          password: hashPassword,
+          password: hashedPassword,
         },
       });
       return createdUser;
@@ -22,38 +22,82 @@ export default class UserPrismaRepository {
   }
 
   async findByEmail(email) {
-    return await prisma.user.findUnique({
-      where: {
-        email: email,
-      },
-    });
+    try {
+      return await prisma.user.findUnique({
+        where: {
+          email: email,
+        },
+      });
+    } finally {
+      await prisma.$disconnect();
+    }
   }
 
-  async loginUser(email, plainPassword) {
-    const user = await prisma.user.findUnique({
-      where: {
-        email: email,
-      },
-    });
+  async login(email, password) {
+    try {
+      const user = await this.findByEmail(email);
 
-    if (!user) {
-      throw new Error("O usuário não foi encontrado");
+      if (!user) {
+        throw new Error("O usuário não foi encontrado");
+      }
+
+      const isPasswordvalid = decodePassword(user.password, password);
+
+      if (!isPasswordvalid) {
+        throw new Error("Senha invalida.");
+      }
+
+      return user;
+    } finally {
+      await prisma.$disconnect();
     }
-
-    const isPasswordvalid = decodePassword(user.password, plainPassword);
-
-    if (!isPasswordvalid) {
-      throw new Error("Senha invalida.");
-    }
-
-    return user
   }
+
+async edit(userId, userData) {
+    try {
+      const existingUser = await this.findById(userId);
+      if (!existingUser) {
+        throw new Error("Usuário não encontrado");
+      }
+
+      const updateData = {};
+      if (userData.name) updateData.name = userData.name;
+      if (userData.password) updateData.password = encodePassword(userData.password);
+      
+      if (userData.email && userData.email !== existingUser.email) {
+        const emailExists = await this.findByEmail(userData.email);
+        if (emailExists && emailExists.id !== userId) {
+          throw new Error("Email já está em uso");
+        }
+        updateData.email = userData.email;
+      }
+
+      const updatedUser = await prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: updateData,
+      });
+
+      return updatedUser;
+    } finally {
+      await prisma.$disconnect();
+    }
+  }
+
+  async findById(userId) {
+    try {
+      return await prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+      });
+    } finally {
+      await prisma.$disconnect();
+    }
+  }
+
+  // async findByName(name) {
+  //     // todo
+  // }
 }
-
-// export function findByName(name) {
-//     // todo
-// }
-
-// export function findById(id) {
-//     // todo
-// }
