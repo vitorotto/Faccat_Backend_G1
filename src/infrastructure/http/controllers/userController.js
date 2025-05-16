@@ -9,9 +9,10 @@ export const handleCreateUser = async (req, res) => {
   try {
     const { name, email, password } = req.validatedData;
     const createUserUseCase = makeCreateUser(repository);
-    const user = await createUserUseCase({ name, email, password });
+    await createUserUseCase({ name, email, password });
 
-    res.status(201).json(userWithoutPassword(user));
+    // res.status(201).json(userWithoutPassword(user));
+    res.status(201).json({code: 201, message: "Usuario criado com sucesso!"})
   } catch (err) {
     if (err.message === "Usuário já registrado com este email.") {
       res.status(409).json({ code: 409, message: err.message });
@@ -31,7 +32,7 @@ export const handleLogin = async (req, res) => {
     res.status(200).json({code: 200, message: "Login realizado com sucesso", data: user});
   } catch (err) {
     console.error("Error ao fazer Login:", err);
-    res.status(500).json({ code: 500, message: "Ocorreu um erro interno no servidor." });
+    res.status(500).json({ code: 500, message: "Ocorreu um erro interno no servidor.", err });
   }
 };
 

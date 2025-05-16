@@ -1,0 +1,36 @@
+@startuml
+actor "Usuário" as Usuario
+participant "API Node.js" as API
+participant "Controle de Autenticação\n(JWT)" as Auth
+participant "Serviço de Regras de Negócio" as Servico
+participant "Repositório de Histórico" as Historico
+database "Banco de Dados\n(PostgreSQL)" as DB
+
+== Acesso Inicial ==
+Usuario -> API : Solicita acesso (login/senha)
+API -> Auth : Verifica credenciais
+alt credenciais válidas
+Auth --> API : Token JWT
+API --> Usuario : Acesso autorizado
+else inválidas
+Auth --> API : Erro de autenticação
+API --> Usuario : Acesso negado
+end
+
+== Registro de Descarte ==
+Usuario -> API : Envia nova tarefa de descarte
+API -> Servico : Validar dados e aplicar regras
+Servico -> DB : Armazena nova tarefa
+DB --> Servico : Confirmação
+Servico --> Historico : Atualiza histórico do usuário
+Historico --> API : Resposta com status
+API --> Usuario : Tarefa registrada com sucesso
+
+== Consulta ao Histórico ==
+Usuario -> API : Solicita histórico de descarte
+API -> Historico : Buscar dados
+Historico -> DB : Consulta registros
+DB --> Historico : Retorna dados
+Historico --> API : Histórico compilado
+API --> Usuario : Exibe histórico
+@enduml
