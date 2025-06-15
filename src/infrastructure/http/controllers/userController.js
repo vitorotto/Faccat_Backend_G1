@@ -9,9 +9,9 @@ export const handleCreateUser = async (req, res) => {
   try {
     const { name, email, password } = req.validatedData;
     const createUserUseCase = makeCreateUser(repository);
-    const user = await createUserUseCase({ name, email, password });
+    await createUserUseCase({ name, email, password });
 
-    res.status(201).json(userWithoutPassword(user));
+    res.status(201).json({ code: 201, message: "Usuário criado com sucesso"});
   } catch (err) {
     if (err.message === "Usuário já registrado com este email.") {
       res.status(409).json({ code: 409, message: err.message });
