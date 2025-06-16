@@ -1,6 +1,6 @@
-import makeCreateUser from "../../../application/use-cases/CreateUsers.js";
-import makeEdituser from "../../../application/use-cases/EditUser.js";
-import makeLoginUser from "../../../application/use-cases/LoginUser.js";
+import makeCreateUser from "../../../application/use-cases/user/CreateUsers.js";
+import makeEdituser from "../../../application/use-cases/user/EditUser.js";
+import makeLoginUser from "../../../application/use-cases/user/LoginUser.js";
 import UserPrismaRepository from "../../database/UserPrismaRepository.js";
 
 const repository = new UserPrismaRepository();

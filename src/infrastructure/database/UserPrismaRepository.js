@@ -1,6 +1,6 @@
-import { encodePassword, decodePassword } from "../../utils/bcrypt.js";
-import { PrismaClient } from "../../generated/prisma/index.js";
+import { PrismaClient } from "../../../generated/client/index.js";
 import UserRepository from "../../domain/ports/UserRepository.js";
+import { decodePassword, encodePassword } from "../../utils/bcrypt.js";
 
 export const prisma = new PrismaClient();
 

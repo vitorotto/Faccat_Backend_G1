@@ -1,4 +1,4 @@
-import generateToken from "../../utils/generateToken.js";
+import generateToken from "../../../utils/generateToken.js";
 
 export default function makeLoginUser(userRepository) {
   return async function loginUser(email, password) {
