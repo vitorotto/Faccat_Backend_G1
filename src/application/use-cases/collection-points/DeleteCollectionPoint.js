@@ -1,13 +1,17 @@
-import { ConflictError } from "../../../errors/HttpErrors.js";
+import { NotFoundError, UnauthorizedError } from "../../../errors/HttpErrors.js";
 
 export default function makeDeleteCollectionPoint(collectionRepository) {
-  return async function deleteCollectionPoint(id) {
-    const existingCollectionPoint = await collectionRepository.findById(id);
-    if (!existingCollectionPoint) {
-      throw new ConflictError("Ponto de coleta não existe");
+  return async function deleteCollectionPoint(id, userId) {
+    const collectionPoint = await collectionRepository.findById(id);
+    
+    if (!collectionPoint) {
+      throw new NotFoundError("Ponto de coleta não encontrado");
     }
 
-    const newCollectionPoint = await collectionRepository.deleteById(id);
-    return newCollectionPoint;
+    if (collectionPoint.userId !== userId) {
+      throw new UnauthorizedError("Você não tem permissão para deletar este ponto de coleta");
+    }
+
+    await collectionRepository.deleteById(id);
   };
 }

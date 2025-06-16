@@ -30,13 +30,14 @@ export const handleCreateCollectionPoint = async (req, res, next) => {
 export const handleDeleteCollectionPoint = async (req, res, next) => {
   try {
     const { id } = req.validatedData;
+    const userId = req.userId;
 
     const deleteCollectionPointUseCase = makeDeleteCollectionPoint(repository);
-    await deleteCollectionPointUseCase(id);
+    await deleteCollectionPointUseCase(id, userId);
 
-    return res.status(201).json({
-      code: 201,
-      message: `Ponto deletado com sucesso`,
+    return res.status(200).json({
+      code: 200,
+      message: "Ponto deletado com sucesso",
     });
   } catch (err) {
     next(err);
