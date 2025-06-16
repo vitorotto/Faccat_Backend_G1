@@ -1,5 +1,6 @@
 import makeCreateCollectionPoint from "../../../application/use-cases/collection-points/CreateCollectionPoint.js";
 import makeDeleteCollectionPoint from "../../../application/use-cases/collection-points/DeleteCollectionPoint.js";
+import makeGetCollectionPoint from "../../../application/use-cases/collection-points/GetCollectionPoint.js";
 import { CollectionPointDTO } from "../../../domain/dtos/CollectionPointDTO.js";
 import CollectionPointsPrismaRepository from "../../database/CollectionPointsPrismaRepository.js";
 
@@ -37,8 +38,27 @@ export const handleDeleteCollectionPoint = async (req, res, next) => {
 
     return res.status(200).json({
       code: 200,
-      message: "Ponto deletado com sucesso",
+      message: "Ponto de coleta deletado com sucesso",
     });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const handleGetCollectionPointById = async (req, res, next) => {
+  try {
+    const { id } = req.validatedData;
+
+    const getCollectionPointUseCase = makeGetCollectionPoint(repository);
+    const collectionPoint = await getCollectionPointUseCase(id);
+
+    return res
+      .status(200)
+      .json({
+        code: 200,
+        message: "Ponto de coleta encontrado",
+        data: collectionPoint,
+      });
   } catch (err) {
     next(err);
   }

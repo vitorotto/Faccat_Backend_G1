@@ -11,7 +11,7 @@ import {
     handleDeleteCollectionPoint,
     // handleEditCollectionPoint,
     // handleGetAllCollectionPoints,
-    // handleGetCollectionPointById,
+    handleGetCollectionPointById,
     // handleValidateCollectionPoint
 } from '../controllers/collectionPointsController.js'
 
@@ -19,7 +19,7 @@ const router = express.Router()
 
 router.post('/create', validateToken, validateRequest(collectionPointsSchema), handleCreateCollectionPoint);
 // router.get('/list', validateToken, handleGetAllCollectionPoints);
-// router.get('/detail/:id', validateToken, validateRequest(collectionPointUUIDSchema, 'params'), handleGetCollectionPointById);
+router.get('/detail/:id', validateToken, validateRequest(collectionPointUUIDSchema, 'params'), handleGetCollectionPointById);
 // router.put('/update/:id', validateToken, validateRequest(collectionPointsSchemaEdit, 'body'), handleEditCollectionPoint);
 router.delete('/delete/:id', validateToken, validateRequest(collectionPointUUIDSchema, 'params'), handleDeleteCollectionPoint);
 // router.patch('/validate/:id', validateToken, validateRequest(collectionPointUUIDSchema, 'params'), handleValidateCollectionPoint);
