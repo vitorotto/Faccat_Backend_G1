@@ -8,7 +8,7 @@ import {
 } from '../../../validationsSchema/collectionPointsSchema.js'
 import {
     handleCreateCollectionPoint,
-    // handleDeleteCollectionPoint,
+    handleDeleteCollectionPoint,
     // handleEditCollectionPoint,
     // handleGetAllCollectionPoints,
     // handleGetCollectionPointById,
@@ -21,7 +21,7 @@ router.post('/create', validateToken, validateRequest(collectionPointsSchema), h
 // router.get('/list', validateToken, handleGetAllCollectionPoints);
 // router.get('/detail/:id', validateToken, validateRequest(collectionPointUUIDSchema, 'params'), handleGetCollectionPointById);
 // router.put('/update/:id', validateToken, validateRequest(collectionPointsSchemaEdit, 'body'), handleEditCollectionPoint);
-// router.delete('/delete/:id', validateToken, validateRequest(collectionPointUUIDSchema, 'params'), handleDeleteCollectionPoint);
+router.delete('/delete/:id', validateToken, validateRequest(collectionPointUUIDSchema, 'params'), handleDeleteCollectionPoint);
 // router.patch('/validate/:id', validateToken, validateRequest(collectionPointUUIDSchema, 'params'), handleValidateCollectionPoint);
 
 export default router;

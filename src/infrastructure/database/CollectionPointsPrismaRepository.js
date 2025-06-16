@@ -27,4 +27,28 @@ export default class CollectionPointsPrismaRepository extends CollectionPointsRe
       await prisma.$disconnect();
     }
   }
+
+  async findById(id) {
+    try {
+      return await prisma.colectionPoints.findUnique({
+        where: {
+          id: id,
+        },
+      });
+    } finally {
+      await prisma.$disconnect();
+    }
+  }
+
+  async deleteById(id) {
+    try {
+      return await prisma.colectionPoints.delete({
+        where: {
+          id: id,
+        },
+      });
+    } finally {
+      await prisma.$disconnect();
+    }
+  }
 }

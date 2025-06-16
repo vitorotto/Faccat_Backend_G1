@@ -5,7 +5,7 @@ import UserPrismaRepository from "../../database/UserPrismaRepository.js";
 
 const repository = new UserPrismaRepository();
 
-export const handleCreateUser = async (req, res) => {
+export const handleCreateUser = async (req, res, next) => {
   try {
     const { name, email, password } = req.validatedData;
     const createUserUseCase = makeCreateUser(repository);
@@ -13,16 +13,11 @@ export const handleCreateUser = async (req, res) => {
 
     res.status(201).json({ code: 201, message: "Usuário criado com sucesso"});
   } catch (err) {
-    if (err.message === "Usuário já registrado com este email.") {
-      res.status(409).json({ code: 409, message: err.message });
-    } else {
-      console.error("Erro ao criar usuário:", err);
-      res.status(500).json({ code: 500, message: "Ocorreu um erro interno no servidor." });
-    }
+    next(err);
   }
 };
 
-export const handleLogin = async (req, res) => {
+export const handleLogin = async (req, res, next) => {
   try {
     const { email, password } = req.validatedData;
     const loginUserCase = makeLoginUser(repository);
@@ -30,12 +25,11 @@ export const handleLogin = async (req, res) => {
 
     res.status(200).json({code: 200, message: "Login realizado com sucesso", data: user});
   } catch (err) {
-    console.error("Error ao fazer Login:", err);
-    res.status(500).json({ code: 500, message: "Ocorreu um erro interno no servidor." });
+    next(err);
   }
 };
 
-export const handleEditUser = async (req, res) => {
+export const handleEditUser = async (req, res, next) => {
   try {
     const { name, email, password } = req.validatedData;
     const userId = req.userId;
@@ -45,11 +39,6 @@ export const handleEditUser = async (req, res) => {
 
     res.status(200).json({code: 200, message: "Dados editados com sucesso"});
   } catch (err) {
-    console.error("Erro ao editar usuário:", err);
-    res.status(500).json({ code: 500, message: "Ocorreu um erro interno no servidor." });
+    next(err);
   }
 };
-function userWithoutPassword(user) {
-  const { password: _, ...userWithoutPassword } = user;
-  return userWithoutPassword;
-}

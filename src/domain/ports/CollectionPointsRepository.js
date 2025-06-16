@@ -6,4 +6,12 @@ export default class CollectionPointsRepository {
     async findByAddress(address) {
         throw new Error("Metodo 'this.findByAddress()' precisa ser implementado");
     }
+
+    async findById(id) {
+        throw new Error("Metodo 'this.findById()' precisa ser implementado");
+    }
+
+    async deleteById(id) {
+        throw new Error("Metodo 'this.deleteById()' precisa ser implementado");
+    }
 }
