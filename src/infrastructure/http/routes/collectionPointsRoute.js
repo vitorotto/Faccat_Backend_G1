@@ -10,7 +10,7 @@ import {
     handleCreateCollectionPoint,
     handleDeleteCollectionPoint,
     // handleEditCollectionPoint,
-    // handleGetAllCollectionPoints,
+    handleGetAllCollectionPoints,
     handleGetCollectionPointById,
     // handleValidateCollectionPoint
 } from '../controllers/collectionPointsController.js'
@@ -18,7 +18,7 @@ import {
 const router = express.Router()
 
 router.post('/create', validateToken, validateRequest(collectionPointsSchema), handleCreateCollectionPoint);
-// router.get('/list', validateToken, handleGetAllCollectionPoints);
+router.get('/list', validateToken, handleGetAllCollectionPoints);
 router.get('/detail/:id', validateToken, validateRequest(collectionPointUUIDSchema, 'params'), handleGetCollectionPointById);
 // router.put('/update/:id', validateToken, validateRequest(collectionPointsSchemaEdit, 'body'), handleEditCollectionPoint);
 router.delete('/delete/:id', validateToken, validateRequest(collectionPointUUIDSchema, 'params'), handleDeleteCollectionPoint);

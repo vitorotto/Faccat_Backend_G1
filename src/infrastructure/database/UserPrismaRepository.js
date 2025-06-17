@@ -53,7 +53,7 @@ export default class UserPrismaRepository extends UserRepository {
     }
   }
 
-async edit(userId, userData) {
+  async edit(userId, userData) {
     try {
       const existingUser = await this.findById(userId);
       if (!existingUser) {
@@ -97,7 +97,4 @@ async edit(userId, userData) {
     }
   }
 
-  // async findByName(name) {
-  //     // todo
-  // }
 }

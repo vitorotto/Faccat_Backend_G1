@@ -1,6 +1,7 @@
 import makeCreateCollectionPoint from "../../../application/use-cases/collection-points/CreateCollectionPoint.js";
 import makeDeleteCollectionPoint from "../../../application/use-cases/collection-points/DeleteCollectionPoint.js";
 import makeGetCollectionPoint from "../../../application/use-cases/collection-points/GetCollectionPoint.js";
+import makeGetAllCollectionPoint from "../../../application/use-cases/collection-points/ListAllCollectionPoint.js";
 import { CollectionPointDTO } from "../../../domain/dtos/CollectionPointDTO.js";
 import CollectionPointsPrismaRepository from "../../database/CollectionPointsPrismaRepository.js";
 
@@ -63,3 +64,16 @@ export const handleGetCollectionPointById = async (req, res, next) => {
     next(err);
   }
 };
+
+export const handleGetAllCollectionPoints = async (req, res, next) => {
+  try {
+    const { limit, skip } = req.validatedData
+
+    const getAllCollectionsPointsUseCase = makeGetAllCollectionPoint(repository)
+    const collectionPoints = await getAllCollectionsPointsUseCase(limit, skip)
+
+    return res.status(200).json({ code: 200, message: "Pontos de coleta retornados com sucesso", data: collectionPoints})
+  } catch (err) {
+    next(err)
+  }
+}

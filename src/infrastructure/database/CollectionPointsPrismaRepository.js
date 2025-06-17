@@ -51,4 +51,17 @@ export default class CollectionPointsPrismaRepository extends CollectionPointsRe
       await prisma.$disconnect();
     }
   }
+
+  async listAll(limite) {
+    try {
+      const list = await prisma.colectionPoints.findMany({
+        where: {
+          validated: true,
+        }
+      })
+      return list;
+    } finally {
+      await prisma.$disconnect()
+    }
+  }
 }
