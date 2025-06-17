@@ -2,8 +2,8 @@ import { z } from 'zod';
 
 const nameSchema = z.string().min(3, "O nome é obrigatório");
 const descriptionSchema = z.string().min(3, "A descrição é obrigatória");
-const latitudeSchema = z.string().min(3, "A latitude é obrigatória");
-const longitudeSchema = z.string().min(3, "A longitude é obrigatória");
+const latitudeSchema = z.number().min(-90).max(90).describe("A latitude deve estar entre -90 e 90");
+const longitudeSchema = z.number().min(-180).max(180).describe("A longitude deve estar entre -180 e 180");
 const citySchema = z.string().min(3, "A cidade é obrigatória");
 const ufSchema = z.string().length(2, "A UF deve ter exatamente 2 caracteres");
 const addressSchema = z.string().min(3, "O endereço é obrigatório");
@@ -54,3 +54,13 @@ export const collectionPointsSchemaEdit = z.object({
     operating_hours: operatingHoursSchema,
     contact: contactSchema,
 }).strict();
+
+export const collectionPointsListSchema = z.object({
+    latitude: latitudeSchema.optional(),
+    longitude: longitudeSchema.optional(),
+    radius: z.number().max(50).optional(),
+    types: z.array(z.string()).optional(),
+    page: z.number().int().min(1).optional(),
+    limit: z.number().int().max(50).optional()
+}).strict();
+

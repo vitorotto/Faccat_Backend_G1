@@ -52,7 +52,7 @@ export default class CollectionPointsPrismaRepository extends CollectionPointsRe
     }
   }
 
-  async listAll(limite) {
+  async listAll(limit, skip, cursor) {
     try {
       const list = await prisma.colectionPoints.findMany({
         where: {

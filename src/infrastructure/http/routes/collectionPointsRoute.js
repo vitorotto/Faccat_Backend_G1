@@ -4,7 +4,8 @@ import { validateRequest } from '../../../middlewares/validateRequestMiddleware.
 import {
     collectionPointsSchema,
     collectionPointsSchemaEdit,
-    collectionPointUUIDSchema
+    collectionPointUUIDSchema,
+    collectionPointsListSchema
 } from '../../../validationsSchema/collectionPointsSchema.js'
 import {
     handleCreateCollectionPoint,
@@ -18,7 +19,7 @@ import {
 const router = express.Router()
 
 router.post('/create', validateToken, validateRequest(collectionPointsSchema), handleCreateCollectionPoint);
-router.get('/list', validateToken, handleGetAllCollectionPoints);
+router.get('/list', validateToken, validateRequest(collectionPointsListSchema), handleGetAllCollectionPoints);
 router.get('/detail/:id', validateToken, validateRequest(collectionPointUUIDSchema, 'params'), handleGetCollectionPointById);
 // router.put('/update/:id', validateToken, validateRequest(collectionPointsSchemaEdit, 'body'), handleEditCollectionPoint);
 router.delete('/delete/:id', validateToken, validateRequest(collectionPointUUIDSchema, 'params'), handleDeleteCollectionPoint);
