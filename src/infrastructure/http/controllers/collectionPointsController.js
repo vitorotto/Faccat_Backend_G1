@@ -67,13 +67,13 @@ export const handleGetCollectionPointById = async (req, res, next) => {
 
 export const handleGetAllCollectionPoints = async (req, res, next) => {
   try {
-    const { limit, skip } = req.validatedData
+    const { cursor, limit, latitude, longitude, radius, types } = req.validatedData;
 
-    const getAllCollectionsPointsUseCase = makeGetAllCollectionPoint(repository)
-    const collectionPoints = await getAllCollectionsPointsUseCase(limit, skip)
+    const getAllCollectionsPointsUseCase = makeGetAllCollectionPoint(repository);
+    const collectionPoints = await getAllCollectionsPointsUseCase({ cursor, limit, latitude, longitude, radius, types });
 
-    return res.status(200).json({ code: 200, message: "Pontos de coleta retornados com sucesso", data: collectionPoints})
+    return res.status(200).json({ code: 200, message: "Pontos de coleta retornados com sucesso", data: collectionPoints });
   } catch (err) {
-    next(err)
+    next(err);
   }
 }
