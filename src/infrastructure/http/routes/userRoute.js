@@ -5,7 +5,8 @@ import { editSchema, loginSchema, userSchema } from '../../../validationsSchema/
 import {
     handleCreateUser,
     handleEditUser,
-    handleLogin
+    handleLogin,
+    handleGetUserCollectionPoints
 } from '../controllers/userController.js';
 
 const router = express.Router()
@@ -13,5 +14,6 @@ const router = express.Router()
 router.post('/create', validateRequest(userSchema), handleCreateUser);
 router.post('/login', validateRequest(loginSchema), handleLogin);
 router.put('/edit', validateToken, validateRequest(editSchema), handleEditUser);
+router.get('/collection-points', validateToken, handleGetUserCollectionPoints)
 
 export default router;

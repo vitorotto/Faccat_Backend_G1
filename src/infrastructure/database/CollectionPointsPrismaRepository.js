@@ -127,6 +127,22 @@ export default class CollectionPointsPrismaRepository extends CollectionPointsRe
     }
   }
 
+  async findByUserId(userId) {
+    try {
+      const userCollections = prisma.colectionPoints.findMany({
+        where: {
+          userId: userId,
+        }
+      })
+      return userCollections
+    } finally {
+      await prisma.$disconnect()
+    }
+  }
+
+  /**
+   * @private 
+   */
   haversine(lat1, lon1, lat2, lon2) {
     function toRad(x) { return x * Math.PI / 180; }
     const R = 6371;
