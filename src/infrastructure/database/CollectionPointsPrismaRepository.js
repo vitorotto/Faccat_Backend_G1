@@ -55,7 +55,6 @@ export default class CollectionPointsPrismaRepository extends CollectionPointsRe
   async listAllValidated({ cursor, limit, latitude, longitude, radius, types }) {
     try {
       const query = {
-        take: limit,
         where: {
           validated: false,
           ...(types && types.length > 0 ? { types: { hasEvery: types } } : {})
@@ -74,7 +73,7 @@ export default class CollectionPointsPrismaRepository extends CollectionPointsRe
 
       if (latitude && longitude && radius) {
         points = points.filter(p => {
-          const dist = haversine(
+          const dist = this.haversine(
             parseFloat(latitude),
             parseFloat(longitude),
             parseFloat(p.latitude),
@@ -84,13 +83,13 @@ export default class CollectionPointsPrismaRepository extends CollectionPointsRe
         });
       }
 
-      return points;
+      return points.slice(0, limit);
     } finally {
       await prisma.$disconnect();
     }
   }
 
-  async listAllValidated({ cursor, limit, latitude, longitude, radius, types }) {
+  async listAllNonValidated({ cursor, limit, latitude, longitude, radius, types }) {
     try {
       const query = {
         take: limit,
