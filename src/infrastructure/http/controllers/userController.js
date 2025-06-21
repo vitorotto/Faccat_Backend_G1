@@ -35,7 +35,7 @@ export const handleLogin = async (req, res, next) => {
 export const handleEditUser = async (req, res, next) => {
   try {
     const { name, email, password } = req.validatedData;
-    const userId = req.userId;
+    const userId = req.user.id;
     
     const editUserCase = makeEdituser(repository);
     await editUserCase(userId, { name, email, password });
@@ -48,7 +48,7 @@ export const handleEditUser = async (req, res, next) => {
 
 export const handleGetUserCollectionPoints = async (req, res, next) => {
   try {
-    const userId = req.userId
+    const userId = req.user.id
 
     const getAllCollectionsPointsUseCase = makeGetAllUserCollections(repository, collectionRepository)
     const userCollections = await getAllCollectionsPointsUseCase(userId)

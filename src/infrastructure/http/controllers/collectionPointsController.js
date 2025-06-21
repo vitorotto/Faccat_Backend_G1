@@ -11,7 +11,7 @@ export const handleCreateCollectionPoint = async (req, res, next) => {
   try {
     const collectionPointData = {
       ...req.validatedData,
-      userId: req.userId,
+      userId: req.user.id,
     };
 
     const collectionPointDTO = new CollectionPointDTO(collectionPointData);
@@ -32,7 +32,7 @@ export const handleCreateCollectionPoint = async (req, res, next) => {
 export const handleDeleteCollectionPoint = async (req, res, next) => {
   try {
     const { id } = req.validatedData;
-    const userId = req.userId;
+    const userId = req.user.id;
 
     const deleteCollectionPointUseCase = makeDeleteCollectionPoint(repository);
     await deleteCollectionPointUseCase(id, userId);
