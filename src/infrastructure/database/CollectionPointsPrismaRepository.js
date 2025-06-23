@@ -154,4 +154,17 @@ export default class CollectionPointsPrismaRepository extends CollectionPointsRe
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }
+
+  async edit({data, collectionId, userId}) {
+    try {
+      return await prisma.colectionPoints.update({
+        where: { id: collectionId, userId: userId },
+        data: {
+          ...data
+        }
+      });
+    } finally {
+      await prisma.$disconnect();
+    }
+  }
 }

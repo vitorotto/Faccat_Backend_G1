@@ -1,5 +1,6 @@
 import makeCreateCollectionPoint from "../../../application/use-cases/collection-points/CreateCollectionPoint.js";
 import makeDeleteCollectionPoint from "../../../application/use-cases/collection-points/DeleteCollectionPoint.js";
+import makeEditCollectionPoint from "../../../application/use-cases/collection-points/EditCollectionPoint.js";
 import makeGetCollectionPoint from "../../../application/use-cases/collection-points/GetCollectionPoint.js";
 import makeGetAllCollectionPoint from "../../../application/use-cases/collection-points/ListAllCollectionPoint.js";
 import { CollectionPointDTO } from "../../../domain/dtos/CollectionPointDTO.js";
@@ -74,6 +75,28 @@ export const handleGetAllCollectionPoints = async (req, res, next) => {
 
     return res.status(200).json({ code: 200, message: "Pontos de coleta retornados com sucesso", data: collectionPoints });
   } catch (err) {
+    next(err);
+  }
+}
+
+export const handleEditCollectionPoint = async (req, res, next) => {
+  try {
+    const collectionId = req.params.id
+    const data = req.validatedData
+    const userId = req.user.id
+
+
+    const editCollectionPointUseCase = makeEditCollectionPoint(repository);
+    const collectionPoint = await editCollectionPointUseCase({ data, userId, collectionId });
+
+    return res.status(200).json({
+      code: 200,
+      message: "Ponto de coleta editado com sucesso",
+      data: collectionPoint,
+    });
+  }
+  catch(err) {
+    console.error(err)
     next(err);
   }
 }
