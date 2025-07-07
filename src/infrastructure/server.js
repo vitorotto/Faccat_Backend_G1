@@ -14,6 +14,6 @@ app.use('/api/admin', adminRoutes)
 app.use((req, res, next) => requestNotFound(req, res));
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta: http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Servidor rodando na porta: ${PORT}`);
 });
