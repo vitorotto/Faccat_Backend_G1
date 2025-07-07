@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "main": "src/infrastructure/server.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "node server.js",
     "db:sync": "prisma generate && prisma db push"
   },
   "keywords": [],
