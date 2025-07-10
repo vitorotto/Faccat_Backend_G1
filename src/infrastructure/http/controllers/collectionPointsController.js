@@ -26,6 +26,7 @@ export const handleCreateCollectionPoint = async (req, res, next) => {
       message: `Ponto ${collectionPoint.name} criado com sucesso. Aguarde a validacao do ponto para utilizar`,
     });
   } catch (err) {
+    console.error(err);
     next(err);
   }
 };

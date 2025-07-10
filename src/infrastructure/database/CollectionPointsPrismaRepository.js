@@ -1,143 +1,113 @@
-import { PrismaClient } from "../../../generated/client/index.js";
+import { prisma } from "./prisma.js";
 import CollectionPointsRepository from "../../domain/ports/CollectionPointsRepository.js";
-
-export const prisma = new PrismaClient();
 
 export default class CollectionPointsPrismaRepository extends CollectionPointsRepository {
   async create(dto) {
-    try {
-      const createdCollectionPoint = await prisma.colectionPoints.create({
-        data: {
-          ...dto,
-          userId: dto.userId,
-        },
-      });
-      return createdCollectionPoint;
-    } finally {
-      await prisma.$disconnect();
-    }
+    const createdCollectionPoint = await prisma.colectionPoints.create({
+      data: {
+        ...dto,
+        userId: dto.userId,
+      },
+    });
+    return createdCollectionPoint;
   }
 
   async findByAddress(address) {
-    try {
-      return await prisma.colectionPoints.findFirst({
-        where: { address },
-      });
-    } finally {
-      await prisma.$disconnect();
-    }
+    return await prisma.colectionPoints.findFirst({
+      where: { address },
+    });
   }
 
   async findById(id) {
-    try {
-      return await prisma.colectionPoints.findUnique({
-        where: {
-          id: id,
-        },
-      });
-    } finally {
-      await prisma.$disconnect();
-    }
+    return await prisma.colectionPoints.findUnique({
+      where: {
+        id: id,
+      },
+    });
   }
 
   async deleteById(id) {
-    try {
-      return await prisma.colectionPoints.delete({
-        where: {
-          id: id,
-        },
-      });
-    } finally {
-      await prisma.$disconnect();
-    }
+    return await prisma.colectionPoints.delete({
+      where: {
+        id: id,
+      },
+    });
   }
 
   async listAllValidated({ cursor, limit, latitude, longitude, radius, types }) {
-    try {
-      const query = {
-        where: {
-          validated: false,
-          ...(types && types.length > 0 ? { types: { hasEvery: types } } : {})
-        },
-        orderBy: {
-          createdAt: 'desc'
-        }
-      };
-
-      if (cursor) {
-        query.skip = 1;
-        query.cursor = { id: cursor };
+    const query = {
+      where: {
+        validated: false,
+        ...(types && types.length > 0 ? { types: { hasEvery: types } } : {})
+      },
+      orderBy: {
+        createdAt: 'desc'
       }
+    };
 
-      let points = await prisma.colectionPoints.findMany(query);
-
-      if (latitude && longitude && radius) {
-        points = points.filter(p => {
-          const dist = this.haversine(
-            parseFloat(latitude),
-            parseFloat(longitude),
-            parseFloat(p.latitude),
-            parseFloat(p.longitude)
-          );
-          return dist <= radius;
-        });
-      }
-
-      return points.slice(0, limit);
-    } finally {
-      await prisma.$disconnect();
+    if (cursor) {
+      query.skip = 1;
+      query.cursor = { id: cursor };
     }
+
+    let points = await prisma.colectionPoints.findMany(query);
+
+    if (latitude && longitude && radius) {
+      points = points.filter(p => {
+        const dist = this.haversine(
+          parseFloat(latitude),
+          parseFloat(longitude),
+          parseFloat(p.latitude),
+          parseFloat(p.longitude)
+        );
+        return dist <= radius;
+      });
+    }
+
+    return points.slice(0, limit);
   }
 
   async listAllNonValidated({ cursor, limit, latitude, longitude, radius, types }) {
-    try {
-      const query = {
-        take: limit,
-        where: {
-          validated: false,
-          ...(types && types.length > 0 ? { types: { hasEvery: types } } : {})
-        },
-        orderBy: {
-          createdAt: 'desc'
-        }
-      };
-
-      if (cursor) {
-        query.skip = 1;
-        query.cursor = { id: cursor };
+    const query = {
+      take: limit,
+      where: {
+        validated: false,
+        ...(types && types.length > 0 ? { types: { hasEvery: types } } : {})
+      },
+      orderBy: {
+        createdAt: 'desc'
       }
+    };
 
-      let points = await prisma.colectionPoints.findMany(query);
-
-      if (latitude && longitude && radius) {
-        points = points.filter(p => {
-          const dist = this.haversine(
-            parseFloat(latitude),
-            parseFloat(longitude),
-            parseFloat(p.latitude),
-            parseFloat(p.longitude)
-          );
-          return dist <= radius;
-        });
-      }
-
-      return points;
-    } finally {
-      await prisma.$disconnect();
+    if (cursor) {
+      query.skip = 1;
+      query.cursor = { id: cursor };
     }
+
+    let points = await prisma.colectionPoints.findMany(query);
+
+    if (latitude && longitude && radius) {
+      points = points.filter(p => {
+        const dist = this.haversine(
+          parseFloat(latitude),
+          parseFloat(longitude),
+          parseFloat(p.latitude),
+          parseFloat(p.longitude)
+        );
+        return dist <= radius;
+      });
+    }
+
+    return points;
   }
 
   async findByUserId(userId) {
-    try {
-      const userCollections = prisma.colectionPoints.findMany({
-        where: {
-          userId: userId,
-        }
-      })
-      return userCollections
-    } finally {
-      await prisma.$disconnect()
-    }
+    const userCollections = prisma.colectionPoints.findMany({
+      where: {
+        userId: userId,
+      }
+    })
+    return userCollections
   }
 
   /**
@@ -156,15 +126,11 @@ export default class CollectionPointsPrismaRepository extends CollectionPointsRe
   }
 
   async edit({data, collectionId, userId}) {
-    try {
-      return await prisma.colectionPoints.update({
-        where: { id: collectionId },
-        data: {
-          ...data
-        }
-      });
-    } finally {
-      await prisma.$disconnect();
-    }
+    return await prisma.colectionPoints.update({
+      where: { id: collectionId, userId: userId },
+      data: {
+        ...data
+      }
+    });
   }
 }
