@@ -5,6 +5,7 @@
   "main": "src/infrastructure/server.js",
   "scripts": {
     "start": "node src/infrastructure/server.js",
+    "dev": "nodemon src/infrastructure/server.js",
     "db:sync": "prisma generate && prisma db push"
   },
   "keywords": [],

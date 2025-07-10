@@ -158,7 +158,7 @@ export default class CollectionPointsPrismaRepository extends CollectionPointsRe
   async edit({data, collectionId, userId}) {
     try {
       return await prisma.colectionPoints.update({
-        where: { id: collectionId, userId: userId },
+        where: { id: collectionId },
         data: {
           ...data
         }
