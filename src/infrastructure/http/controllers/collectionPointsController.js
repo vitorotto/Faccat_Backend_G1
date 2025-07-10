@@ -1,5 +1,6 @@
 import makeCreateCollectionPoint from "../../../application/use-cases/collection-points/CreateCollectionPoint.js";
 import makeDeleteCollectionPoint from "../../../application/use-cases/collection-points/DeleteCollectionPoint.js";
+import makeEditCollectionPoint from "../../../application/use-cases/collection-points/EditCollectionPoint.js";
 import makeGetCollectionPoint from "../../../application/use-cases/collection-points/GetCollectionPoint.js";
 import makeGetAllCollectionPoint from "../../../application/use-cases/collection-points/ListAllCollectionPoint.js";
 import { CollectionPointDTO } from "../../../domain/dtos/CollectionPointDTO.js";
@@ -11,7 +12,7 @@ export const handleCreateCollectionPoint = async (req, res, next) => {
   try {
     const collectionPointData = {
       ...req.validatedData,
-      userId: req.userId,
+      userId: req.user.id,
     };
 
     const collectionPointDTO = new CollectionPointDTO(collectionPointData);
@@ -32,7 +33,7 @@ export const handleCreateCollectionPoint = async (req, res, next) => {
 export const handleDeleteCollectionPoint = async (req, res, next) => {
   try {
     const { id } = req.validatedData;
-    const userId = req.userId;
+    const userId = req.user.id;
 
     const deleteCollectionPointUseCase = makeDeleteCollectionPoint(repository);
     await deleteCollectionPointUseCase(id, userId);
@@ -67,13 +68,35 @@ export const handleGetCollectionPointById = async (req, res, next) => {
 
 export const handleGetAllCollectionPoints = async (req, res, next) => {
   try {
-    const { limit, skip } = req.validatedData
+    const { cursor, limit, latitude, longitude, radius, types } = req.validatedData;
 
-    const getAllCollectionsPointsUseCase = makeGetAllCollectionPoint(repository)
-    const collectionPoints = await getAllCollectionsPointsUseCase(limit, skip)
+    const getAllCollectionsPointsUseCase = makeGetAllCollectionPoint(repository);
+    const collectionPoints = await getAllCollectionsPointsUseCase({ cursor, limit, latitude, longitude, radius, types });
 
-    return res.status(200).json({ code: 200, message: "Pontos de coleta retornados com sucesso", data: collectionPoints})
+    return res.status(200).json({ code: 200, message: "Pontos de coleta retornados com sucesso", data: collectionPoints });
   } catch (err) {
-    next(err)
+    next(err);
+  }
+}
+
+export const handleEditCollectionPoint = async (req, res, next) => {
+  try {
+    const collectionId = req.params.id
+    const data = req.validatedData
+    const userId = req.user.id
+
+
+    const editCollectionPointUseCase = makeEditCollectionPoint(repository);
+    const collectionPoint = await editCollectionPointUseCase({ data, userId, collectionId });
+
+    return res.status(200).json({
+      code: 200,
+      message: "Ponto de coleta editado com sucesso",
+      data: collectionPoint,
+    });
+  }
+  catch(err) {
+    console.error(err)
+    next(err);
   }
 }

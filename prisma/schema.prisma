@@ -9,14 +9,14 @@ datasource db {
 }
 
 model User {
-  id                String            @id @default(uuid()) @db.Uuid
-  email             String            @unique
-  name              String?
-  password          String?
-  role              String?           @default("USER")
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime?         @updatedAt
-  collectionPoints  ColectionPoints[]
+  id               String            @id @default(uuid()) @db.Uuid
+  email            String            @unique
+  name             String?
+  password         String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime?         @updatedAt
+  role             UserRole          @default(USER)
+  collectionPoints ColectionPoints[]
 }
 
 model ColectionPoints {
@@ -38,3 +38,7 @@ model ColectionPoints {
   user            User      @relation(fields: [userId], references: [id])
 }
 
+enum UserRole {
+  USER
+  ADMIN
+}

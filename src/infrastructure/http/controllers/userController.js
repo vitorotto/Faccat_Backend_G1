@@ -1,9 +1,12 @@
 import makeCreateUser from "../../../application/use-cases/user/CreateUsers.js";
 import makeEdituser from "../../../application/use-cases/user/EditUser.js";
 import makeLoginUser from "../../../application/use-cases/user/LoginUser.js";
+import makeGetAllUserCollections from "../../../application/use-cases/user/GetAllUserCollections.js"
 import UserPrismaRepository from "../../database/UserPrismaRepository.js";
+import CollectionPointsPrismaRepository from "../../database/CollectionPointsPrismaRepository.js";
 
 const repository = new UserPrismaRepository();
+const collectionRepository = new CollectionPointsPrismaRepository()
 
 export const handleCreateUser = async (req, res, next) => {
   try {
@@ -32,7 +35,7 @@ export const handleLogin = async (req, res, next) => {
 export const handleEditUser = async (req, res, next) => {
   try {
     const { name, email, password } = req.validatedData;
-    const userId = req.userId;
+    const userId = req.user.id;
     
     const editUserCase = makeEdituser(repository);
     await editUserCase(userId, { name, email, password });
@@ -42,3 +45,16 @@ export const handleEditUser = async (req, res, next) => {
     next(err);
   }
 };
+
+export const handleGetUserCollectionPoints = async (req, res, next) => {
+  try {
+    const userId = req.user.id
+
+    const getAllCollectionsPointsUseCase = makeGetAllUserCollections(repository, collectionRepository)
+    const userCollections = await getAllCollectionsPointsUseCase(userId)
+
+    res.status(200).json({ code: 200, message: "Pontos de coleta retornados com sucesso", data: userCollections })
+  } catch(err) {
+    next(err)
+  }
+}

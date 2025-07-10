@@ -14,4 +14,8 @@ export default class CollectionPointsRepository {
     async deleteById(id) {
         throw new Error("Metodo 'this.deleteById()' precisa ser implementado");
     }
+
+    async edit(dto, userId, collectionId) {
+        throw new Error("Metodo 'this.edit()' precisa ser implementado")
+    }
 }

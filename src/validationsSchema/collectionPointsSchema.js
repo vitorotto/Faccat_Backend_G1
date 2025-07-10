@@ -42,6 +42,18 @@ export const collectionPointsSchema = z.object({
     contact: contactSchema,
 }).strict();
 
+export const getAllCollectionsSchema = z.object({
+    cursor: z.string().uuid("Cursor é obrigatório para paginação acima de 4").optional(),
+    limit: z.number({
+        required_error: "Limit é um parâmetro obrigatório",
+        invalid_type_error: "Limit deve ser um número"
+    }),
+    latitude: z.number().optional(),
+    longitude: z.number().optional(),
+    radius: z.number().optional(),
+    types: z.array(z.string()).optional()
+}).strict()
+
 export const collectionPointsSchemaEdit = z.object({
     name: nameSchema.optional(),
     description: descriptionSchema.optional(),
