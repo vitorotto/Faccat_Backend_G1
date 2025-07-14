@@ -267,5 +267,3 @@ npm run dev
 ---
 
 **EcoTrack** - Sistema de Gerenciamento de Pontos de Coleta Sustentável 🌱
-
-
