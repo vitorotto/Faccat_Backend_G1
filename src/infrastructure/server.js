@@ -14,6 +14,7 @@ app.use(express.json());
 app.use('/api/users', userRoutes); 
 app.use('/api/collection-points', collectionPointsRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/discart-tasks', discartTasksRoutes);
 
 app.use((req, res, next) => requestNotFound(req, res));
 app.use(errorHandler);
