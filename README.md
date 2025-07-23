@@ -1,4 +1,4 @@
-# EcoTrack
+# RightEcoPoints
 
 ## 📋 Visão Geral do Projeto
 Este é um backend em Node.js para um sistema de gerenciamento de pontos de coleta de materiais recicláveis. O projeto utiliza uma arquitetura Clean Architecture com separação clara de responsabilidades.
@@ -267,5 +267,3 @@ npm run dev
 ---
 
 **EcoTrack** - Sistema de Gerenciamento de Pontos de Coleta Sustentável 🌱
-
-
